@@ -132,3 +132,38 @@ works:
           - "0-3-contents"
           - "01"
           - "02"
+    translations:
+      -
+        directory: xh
+        language: xh
+        title: Title in Xhosa
+        products:
+          epub:
+            date: "2016-05-07" # YYYY-MM-DD e.g. publication date or last revision
+            format: "Digital download" # e.g. Paperback, Digital download, Digital online
+            identifier: "" # e.g. ISBN or UUID
+            image: "cover.jpg"
+            files:
+              - "0-0-cover"
+              - "0-1-titlepage"
+              - "0-2-copyright"
+              - "0-3-contents"
+              - "01"
+              - "02"
+      -
+        directory: fr
+        language: fr
+        title: Title in French
+        products:
+          epub:
+            date: "2016-05-07" # YYYY-MM-DD e.g. publication date or last revision
+            format: "Digital download" # e.g. Paperback, Digital download, Digital online
+            identifier: "" # e.g. ISBN or UUID
+            image: "cover.jpg"
+            files:
+              - "0-0-cover"
+              - "0-1-titlepage"
+              - "0-2-copyright"
+              - "0-3-contents"
+              - "01"
+              - "02"
