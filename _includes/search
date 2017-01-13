@@ -15,7 +15,7 @@ Searches all books in the series.
 
 {% else %}
 
-<form class="search" action="{{ site.baseurl }}/{{ current-directory }}/text/search.html" method="get">
+<form class="search" action="{{ site.baseurl }}/{{ book-directory }}/text/search.html" method="get">
   <label for="search-box"></label>
   <input type="text" id="search-box" class="search-box" name="query" placeholder="Search">
 </form>

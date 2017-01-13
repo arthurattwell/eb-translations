@@ -23,10 +23,10 @@ It's useful to know how many books are in this series
 {% assign number-of-works = site.data.meta.works | size %}
 
 {% comment %}
-Get the current directory for this book only
+Get the directory for this book only
 {% endcomment %}
 
-{% capture current-directory %}{{ page.path | replace: "/", " " | truncatewords: 1, "" }}{% endcapture %}
+{% capture book-directory %}{{ page.path | replace: "/", " " | truncatewords: 1, "" }}{% endcapture %}
 
 {% comment %}
 Get the current file
@@ -35,10 +35,10 @@ Get the current file
 {% capture current-file %}{{ page.url | remove_first: ".html" | replace: "/", " " | split, " " | last }}{% endcapture %}
 
 {% comment %}
-From meta.yml, get only the values where the directory matches the current directory
+From meta.yml, get only the values where the work.directory matches the current book-directory
 {% endcomment %}
 
-{% assign works = site.data.meta.works | where: "directory", current-directory %}
+{% assign works = site.data.meta.works | where: "directory", book-directory %}
 
 {% comment %}
 Now capture each metadata value as a Liquid tag, to be used in HTML and book content e.g. {{ title }}
@@ -46,7 +46,7 @@ Now capture each metadata value as a Liquid tag, to be used in HTML and book con
 
 {% for work in works %}
 
-{% capture directory %}{{ work.directory }}{% endcapture %}
+{% capture book-directory %}{{ work.directory }}{% endcapture %}
 {% capture title %}{{ work.title }}{% endcapture %}
 {% capture subtitle %}{{ work.subtitle }}{% endcapture %}
 {% capture creator %}{{ work.creator }}{% endcapture %}
@@ -114,7 +114,7 @@ Check if we're on the series homepage:
 Check if we're on the search pages.
 {% endcomment %}
 {% capture series-search-url %}{{ site.baseurl }}/search.html{% endcapture %}
-{% capture book-search-url %}{{ site.baseurl }}/{{ directory }}/text/search.html{% endcapture %}
+{% capture book-search-url %}{{ site.baseurl }}/{{ book-directory }}/text/search.html{% endcapture %}
 {% capture series-search-url-slug %}{{ series-search-url | slugify | remove: "-" }}{% endcapture %}
 {% capture book-search-url-slug %}{{ book-search-url | slugify | remove: "-" }}{% endcapture %}
 
@@ -129,12 +129,12 @@ Check if we're on the search pages.
 {% endif %}
 
 {% comment %}
-On homepage and series-search we are not in a book directory,
-so make the current-directory variable nil. If we don't, 
-then on these pages any links that use {{ current-directory }} will be broken
+On homepage and series-search we are not in a book-directory,
+so make the book-directory variable nil. If we don't, 
+then on these pages any links that use {{ book-directory }} will be broken
 {% endcomment %}
 {% if is-homepage == true or is-series-search == true %}
-{% assign current-directory = nil %}
+{% assign book-directory = nil %}
 {% endif %}
 
 {% comment %}
