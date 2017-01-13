@@ -122,6 +122,19 @@ Now capture each metadata value as a Liquid tag, to be used in HTML and book con
 {% capture screen-pdf-image %}{{ work.products.screen-pdf.image }}{% endcapture %}
 {% assign screen-pdf-file-list = work.products.screen-pdf.files %}
 
+{% assign translations = work.translations %}
+
+{% endfor %}
+
+{% comment %}
+Look through the translations list. If this file is in a text-subdirectory
+that matches a translation language, change the `language` variable,
+which we captured above for the work, to the translation language.
+{% endcomment %}
+{% for translation in translations %}
+{% if text-subdirectory == translation.language %}
+{% capture language %}{{ translation.language }}{% endcapture %}
+{% endif %}
 {% endfor %}
 
 {% comment %}
