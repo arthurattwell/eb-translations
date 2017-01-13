@@ -29,7 +29,35 @@ Get the directory for this book only
 {% capture book-directory %}{{ page.path | replace: "/", " " | truncatewords: 1, "" }}{% endcapture %}
 
 {% comment %}
-Get the current file
+Check that we're in the `text` directory or a subdirectory of `text`
+{% endcomment %}
+{% capture text-directory %}{{ page.path | replace: "/", " " | truncatewords: 2, "" | split: " " | last }}{% endcapture %}
+{% if text-directory == "text" %}
+{% assign is-text-directory = true %}
+{% endif %}
+
+{% comment %}
+Get this file's folder depth
+(The minus 1 avoids counting the file itself)
+{% endcomment %}
+{% assign folder-depth = page.path | split: "/" | size | minus: 1 %}
+
+{% comment %}
+If the folder depth is more than 2, this is a subdirectory of `text`
+{% endcomment %}
+{% if folder-depth > 2 %}
+{% assign is-text-subdirectory = true %}
+{% endif %}
+
+{% comment %}
+If this file is in a text-subdirectory, get its name
+{% endcomment %}
+{% if is-text-subdirectory %}
+{% capture text-subdirectory %}{{ page.path | replace: "/", " " | truncatewords: 3, "" | split: " " | last }}{% endcapture %}
+{% endif %}
+
+{% comment %}
+Get the current file's name
 {% endcomment %}
 
 {% capture current-file %}{{ page.url | remove_first: ".html" | replace: "/", " " | split, " " | last }}{% endcapture %}
