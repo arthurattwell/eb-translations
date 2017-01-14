@@ -48,11 +48,15 @@ SET /p process=Enter a number and hit return.
     ECHO.
     ECHO Okay, let's make a print-ready PDF.
     ECHO.
+    :: Remember where we are by assigning a variable to the current directory
+    SET location=%~dp0
     :: Ask user which folder to process
     SET /p bookfolder=Which book folder are we processing? (Hit enter for default 'book' folder.) 
     IF "%bookfolder%"=="" SET bookfolder=book
+    :: Ask if we're outputting the files from a subdirectory
+    SET /p subdirectory=If you're outputting files in a subdirectory, type its name. Otherwise, hit enter. 
     :: Ask if we want to use a particular set of images
-    :chooseimageset
+    :print-pdf-chooseimageset
     ECHO.
     ECHO Do you want to use an output-specific image set? Hit enter for no, or pick a letter for yes:
     ECHO.
@@ -70,9 +74,9 @@ SET /p process=Enter a number and hit return.
         IF "%imageset%"=="w" SET imageconfig=_configs/_config.image-set.web.yml
         IF "%imageset%"=="S" SET imageconfig=_configs/_config.image-set.screen-pdf.yml
         IF "%imageset%"=="s" SET imageconfig=_configs/_config.image-set.screen-pdf.yml
-        GOTO otherconfigs
+        GOTO print-pdf-otherconfigs
     ECHO.
-    :otherconfigs
+    :print-pdf-otherconfigs
     :: Ask the user to add any extra Jekyll config files, e.g. _config.images.print-pdf.yml
     ECHO.
     ECHO Any extra config files?
@@ -89,7 +93,7 @@ SET /p process=Enter a number and hit return.
     :: ...and run Jekyll to build new HTML
     CALL bundle exec jekyll build --config="_config.yml,_configs/_config.print-pdf.yml,%imageconfig%,%config%"
     :: Navigate into the book's folder in _html output
-    CD _html\%bookfolder%\text
+    CD _html\%bookfolder%\text\"%subdirectory%"
     :: Let the user know we're now going to make the PDF
     ECHO Creating PDF...
     :: Check if the _output folder exists, or create it if not.
@@ -99,16 +103,18 @@ SET /p process=Enter a number and hit return.
     :: Run prince, showing progress (-v), printing the docs in file-list
     :: and saving the resulting PDF to the _output folder
     :: (For some reason this has to be run with CALL)
-    CALL prince -v -l file-list -o ..\..\..\_output\%bookfolder%.pdf
+    SET print-pdf-filename=%bookfolder%-%subdirectory%
+    IF "%subdirectory%"=="" SET print-pdf-filename=%bookfolder%
+    CALL prince -v -l file-list -o "%location%_output\%print-pdf-filename%.pdf"
     :: Navigate back to where we began.
-    CD ..\..\..
+    CD "%location%"
     :: Tell the user we're done
     ECHO Done! Opening PDF...
     :: Navigate to the _output folder...
     CD _output
     :: and open the PDF we just created 
     :: (`start` so the PDF app opens as a separate process, doesn't hold up this script)
-    start %bookfolder%.pdf
+    start %print-pdf-filename%.pdf
     :: Navigate back to where we began.
     CD ..\
     :: Let the user easily refresh the PDF by running jekyll b and prince again
@@ -128,9 +134,35 @@ SET /p process=Enter a number and hit return.
     ECHO.
     ECHO Okay, let's make a screen PDF.
     ECHO.
+    :: Remember where we are by assigning a variable to the current directory
+    SET location=%~dp0
     :: Ask user which folder to process
     SET /p bookfolder=Which book folder are we processing? (Hit enter for default 'book' folder.) 
     IF "%bookfolder%"=="" SET bookfolder=book
+    :: Ask if we're outputting the files from a subdirectory
+    SET /p subdirectory=If you're outputting files in a subdirectory, type its name. Otherwise, hit enter. 
+    :: Ask if we want to use a particular set of images
+    :screen-pdf-chooseimageset
+    ECHO.
+    ECHO Do you want to use an output-specific image set? Hit enter for no, or pick a letter for yes:
+    ECHO.
+    ECHO P. Print PDF
+    ECHO E. EPUB
+    ECHO W. Web
+    ECHO S. Screen PDF
+    ECHO.
+    SET /p imageset=
+        IF "%imageset%"=="P" SET imageconfig=_configs/_config.image-set.print-pdf.yml
+        IF "%imageset%"=="p" SET imageconfig=_configs/_config.image-set.print-pdf.yml
+        IF "%imageset%"=="E" SET imageconfig=_configs/_config.image-set.epub.yml
+        IF "%imageset%"=="e" SET imageconfig=_configs/_config.image-set.epub.yml
+        IF "%imageset%"=="W" SET imageconfig=_configs/_config.image-set.web.yml
+        IF "%imageset%"=="w" SET imageconfig=_configs/_config.image-set.web.yml
+        IF "%imageset%"=="S" SET imageconfig=_configs/_config.image-set.screen-pdf.yml
+        IF "%imageset%"=="s" SET imageconfig=_configs/_config.image-set.screen-pdf.yml
+        GOTO screen-pdf-otherconfigs
+    ECHO.
+    :screen-pdf-otherconfigs
     :: Ask the user to add any extra Jekyll config files, e.g. _config.images.print-pdf.yml
     ECHO.
     ECHO Any extra config files?
@@ -147,22 +179,24 @@ SET /p process=Enter a number and hit return.
     :: ...and run Jekyll to build new HTML
     CALL bundle exec jekyll build --config="_config.yml,_configs/_config.screen-pdf.yml,%config%"
     :: Navigate into the book's folder in _html output
-    CD _html\%bookfolder%\text
+    CD _html\%bookfolder%\text\"%subdirectory%"
     :: Let the user know we're now going to make the PDF
     ECHO Creating PDF...
     :: Run prince, showing progress (-v), printing the docs in file-list
     :: and saving the resulting PDF to the _output folder
     :: (For some reason this has to be run with CALL)
-    CALL prince -v -l file-list -o ..\..\..\_output\%bookfolder%.pdf
+    SET screen-pdf-filename=%bookfolder%-%subdirectory%
+    IF "%subdirectory%"=="" SET screen-pdf-filename=%bookfolder%
+    CALL prince -v -l file-list -o "%location%_output\%screen-pdf-filename%.pdf"
     :: Navigate back to where we began.
-    CD ..\..\..
+    CD "%location%"
     :: Tell the user we're done
     ECHO Done! Opening PDF...
     :: Navigate to the _output folder...
     CD _output
     :: and open the PDF we just created 
     :: (`start` so the PDF app opens as a separate process, doesn't hold up this script)
-    start %bookfolder%.pdf
+    start %screen-pdf-filename%.pdf
     :: Navigate back to where we began.
     CD ..\
     :: Let the user easily refresh the PDF by running jekyll b and prince again
@@ -250,6 +284,30 @@ SET /p process=Enter a number and hit return.
     ECHO.
     SET /p firstfile=
     IF "%firstfile%"=="" SET firstfile=0-0-cover
+    :: Ask if we're outputting the files from a subdirectory
+    SET /p subdirectory=If you're outputting files in a subdirectory, type its name. Otherwise, hit enter. 
+    :: Ask if we want to use a particular set of images
+    :epub-chooseimageset
+    ECHO.
+    ECHO Do you want to use an output-specific image set? Hit enter for no, or pick a letter for yes:
+    ECHO.
+    ECHO P. Print PDF
+    ECHO E. EPUB
+    ECHO W. Web
+    ECHO S. Screen PDF
+    ECHO.
+    SET /p imageset=
+        IF "%imageset%"=="P" SET imageconfig=_configs/_config.image-set.print-pdf.yml
+        IF "%imageset%"=="p" SET imageconfig=_configs/_config.image-set.print-pdf.yml
+        IF "%imageset%"=="E" SET imageconfig=_configs/_config.image-set.epub.yml
+        IF "%imageset%"=="e" SET imageconfig=_configs/_config.image-set.epub.yml
+        IF "%imageset%"=="W" SET imageconfig=_configs/_config.image-set.web.yml
+        IF "%imageset%"=="w" SET imageconfig=_configs/_config.image-set.web.yml
+        IF "%imageset%"=="S" SET imageconfig=_configs/_config.image-set.screen-pdf.yml
+        IF "%imageset%"=="s" SET imageconfig=_configs/_config.image-set.screen-pdf.yml
+        GOTO epub-otherconfigs
+    ECHO.
+    :epub-otherconfigs
     :: Ask the user to add any extra Jekyll config files, e.g. _config.images.print-pdf.yml
     ECHO.
     ECHO Any extra config files?
@@ -266,7 +324,7 @@ SET /p process=Enter a number and hit return.
     :: ...and run Jekyll to build new HTML
     CALL bundle exec jekyll build --config="_config.yml,_configs/_config.epub.yml,%config%"
     :: Navigate into the book's folder in _html output
-    CD _html\%bookfolder%\text
+    CD _html\%bookfolder%\text\"%subdirectory%"
     :: Let the user know we're now going to open Sigil
     ECHO Opening Sigil...
     :: Temporarily put Sigil in the PATH, whether x86 or not
@@ -274,7 +332,7 @@ SET /p process=Enter a number and hit return.
     :: and open the cover HTML file in it, to load metadata into Sigil
     START "" sigil.exe "%firstfile%.html"
     :: Open file explorer to make it easy to see the HTML to assemble
-    %SystemRoot%\explorer.exe "%location%_html\%bookfolder%\"
+    %SystemRoot%\explorer.exe "%location%_html\%bookfolder%\%subdirectory%"
     :: Navigate back to where we began
     CD "%location%"
     :: Tell the user we're done
