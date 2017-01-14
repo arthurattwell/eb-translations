@@ -128,8 +128,8 @@ Now capture each metadata value as a Liquid tag, to be used in HTML and book con
 
 {% comment %}
 Look through the translations list. If this file is in a text-subdirectory
-that matches a translation language, change the `language` variable,
-which we captured above for the work, to the translation language.
+that matches a translation language, set is-translation to tue, and change
+the `language` variable, which we captured above, to the translation language.
 {% endcomment %}
 {% for translation in translations %}
 {% if text-subdirectory == translation.language %}
@@ -183,3 +183,34 @@ Create an empty array for the breadcrumbs include to start with
 (thanks https://talk.jekyllrb.com/t/how-do-you-add-items-to-an-array-in-jekyll/324/4)
 {% endcomment %}
 {% assign crumbs-array = "" | split: "|" %}
+
+{% comment %}
+Get relative paths to other book-asset folders, even if we're in a text-subdirectory
+{% endcomment %}
+
+{% comment %}First, for pages not in a book directory, set the path as
+the first book-directory listed in meta.yml{% endcomment %}
+{% capture path-to-book-directory %}{{ site.data.meta.works.[0].directory }}/{% endcapture %}
+
+{% comment %}Then, for all pages in a text directory, create a relative path to the book-directory{% endcomment %}
+{% if is-text-directory %}
+{% if is-text-subdirectory != true %}
+{% capture path-to-book-directory %}../{% endcapture %}
+{% else %}
+{% capture path-to-book-directory %}
+{% for i in (2..folder-depth) %}
+../
+{% endfor %}
+{% endcapture %}
+{% endif %}
+{% capture path-to-book-directory %}{{ path-to-book-directory | strip_newlines }}{% endcapture %}
+{% endif %}
+
+{% comment %}Then set a path to the root directory.{% endcomment %}
+
+{% capture path-to-root-directory %}
+{% for i in (1..folder-depth) %}
+../
+{% endfor %}
+{% endcapture %}
+{% capture path-to-root-directory %}{{ path-to-root-directory | strip_newlines }}{% endcapture %}
