@@ -155,6 +155,19 @@ works:
         language: fr
         title: Title in French
         products:
+          web:
+            date: "2016-05-07" # YYYY-MM-DD e.g. publication date or last revision
+            format: "Digital download" # e.g. Paperback, Digital download, Digital online
+            identifier: "" # e.g. ISBN or UUID
+            image: "cover.jpg"
+            files:
+              - "0-0-cover"
+              - "0-1-titlepage"
+              - "0-2-copyright"
+              - "0-3-contents"
+              - "01"
+              - "02"
+              - "03"
           epub:
             date: "2016-05-07" # YYYY-MM-DD e.g. publication date or last revision
             format: "Digital download" # e.g. Paperback, Digital download, Digital online
@@ -167,3 +180,17 @@ works:
               - "0-3-contents"
               - "01"
               - "02"
+              - "03"
+          print-pdf:
+            date: "2016-05-07" # YYYY-MM-DD e.g. publication date or last revision
+            format: "Paperback" # e.g. Paperback, Digital download, Digital online
+            identifier: "" # e.g. ISBN or UUID
+            image: "cover.jpg"
+            files:
+              - "0-0-cover"
+              - "0-1-titlepage"
+              - "0-2-copyright"
+              - "0-3-contents"
+              - "01"
+              - "02"
+              - "03"
