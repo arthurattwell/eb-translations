@@ -79,6 +79,10 @@ $hyphenate-after: 3 !default; // Minimum letters on new line after hyphen
 $hyphenate-before: 3 !default; // Minimum letters at end of line before hyphen
 $hyphenate-lines: 1 !default; // Maximum number of consecutive lines ending with hyphens
 
+// Text dividers
+// For breaks created with *** in markdown.
+$text-divider: "" !default; // Empty leaves space. \2022 is a bullet
+
 // Footer
 $footer-text-color: $color-text-main !default;
 $footer-background-color: $color-accent !default;
@@ -92,12 +96,14 @@ $masthead-border-color: $color-light !default;
 // Website sidebar/navigation
 $nav-bar-text-size: 0.8em !default;
 $nav-bar-item-collapse: false !default; // Does the nav list fully expand, or collapse until mouseover?
+$nav-bar-close: "\00D7" !default; // &times; ×
 $nav-bar-children-prompt: "+" !default;
 $nav-bar-children-prompt-hide: "\2212" !default; // \2212 is an actual minus sign
 $nav-bar-scrollbar: true !default;
 $nav-bar-width: 15em !default;
 $nav-bar-fixed: false !default; // fixed is not fully supported on many mobile browsers
 $nav-bar-label-color: $color-mid !default;
+$nav-bar-label-background-color: $masthead-background-color !default;
 $nav-bar-border-color: $color-light !default;
 $nav-bar-background-color: white !default;
 $nav-bar-search-background-color: white !default;
@@ -144,6 +150,7 @@ $web-bibliographies: true !default;
 $web-boxes: true !default;
 $web-buttons: true !default;
 $web-code: true !default;
+$web-dialogue: true !default;
 $web-figures: true !default;
 $web-highlighter: true !default;
 $web-glossaries: true !default;
@@ -204,6 +211,7 @@ $web-reset-sequences: true !default; // This should stay last in the @import lis
 @import "partials/web-boxes";
 @import "partials/web-buttons";
 @import "partials/web-code";
+@import "partials/web-dialogue";
 @import "partials/web-figures";
 @import "partials/web-glossaries";
 @import "partials/web-highlighter";
